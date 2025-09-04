@@ -43,7 +43,7 @@ func main() {
 	loadState()
 	r := chi.NewRouter()
 		r.Use(cors.New(cors.Options{
-        AllowedOrigins:   []string{"http://localhost:3000", "https://thenextpick-lzrlaiybi-jovan0042-5768s-projects.vercel.app"},
+        AllowedOrigins:   []string{"http://localhost:3000", "https://thenextpick-lzrlaiybi-jovan0042-5768s-projects.vercel.app", "https://thenextpick-web.vercel.app"},
         AllowCredentials: true,
         Debug:            true,
     }).Handler)
