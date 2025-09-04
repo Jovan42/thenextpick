@@ -15,7 +15,7 @@ export default function ReadingView({ appState, onUpdateState }: ReadingViewProp
 
   const handleToggleCompletion = async (memberName: string) => {
     try {
-      const response = await fetch('http://localhost:8080/api/completion-status', {
+      const response = await fetch('https://thenextpick-api.onrender.com/api/completion-status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ member: memberName }),

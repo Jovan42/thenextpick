@@ -66,7 +66,7 @@ type MemberVotes = {
   
       try {
         const payload = { member: memberName, rankings: memberRankings };
-        const response = await fetch('https://thenextpick-api.onrender.com//api/vote', {
+        const response = await fetch('https://thenextpick-api.onrender.com/api/vote', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
