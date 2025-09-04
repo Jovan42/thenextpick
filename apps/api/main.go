@@ -15,14 +15,25 @@ import (
 // appState will hold our application's state in memory.
 var appState AppState
 
+const dataFilePath = "/data/data.json"
+
 func loadState() {
-	fmt.Println("Loading state from data.json...")
-	data, err := os.ReadFile("data.json")
-	if err != nil {
-		log.Fatalf("Error reading data.json: %v", err)
+	fmt.Println("Loading state from", dataFilePath)
+	// Change the filename to use the constant path
+	data, err := os.ReadFile(dataFilePath)
+	
+	// If the file doesn't exist (e.g., first ever deploy), create a default state.
+	if os.IsNotExist(err) {
+		fmt.Println("data.json not found, creating default state.")
+		// Create a default state here or have a default .json in your repo to copy from.
+		// For now, we'll just log a fatal error. In a real app, you'd handle this more gracefully.
+		log.Fatalf("data.json not found at %s. Please create an initial file on the persistent disk.", dataFilePath)
+	} else if err != nil {
+		log.Fatalf("Error reading state file: %v", err)
 	}
+
 	if err := json.Unmarshal(data, &appState); err != nil {
-		log.Fatalf("Error unmarshaling data.json: %v", err)
+		log.Fatalf("Error unmarshaling state file: %v", err)
 	}
 	fmt.Println("State loaded successfully.")
 }
@@ -32,10 +43,13 @@ func saveState() error {
 	if err != nil {
 		return fmt.Errorf("error marshaling state: %v", err)
 	}
-	if err = os.WriteFile("data.json", data, 0644); err != nil {
-		return fmt.Errorf("error writing to data.json: %v", err)
+
+	// Change the filename to use the constant path
+	if err = os.WriteFile(dataFilePath, data, 0644); err != nil {
+		return fmt.Errorf("error writing to state file: %v", err)
 	}
-	fmt.Println("State saved successfully.")
+	
+	fmt.Println("State saved successfully to persistent disk.")
 	return nil
 }
 
