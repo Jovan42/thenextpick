@@ -2,9 +2,11 @@
   "name": "TheNextPick",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "dev:api": "cd apps/api && go run .",
+    "dev:web": "turbo run dev --filter=web",
+    "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
   },

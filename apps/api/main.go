@@ -19,19 +19,40 @@ const dataFilePath = "/data/data.json"
 
 func loadState() {
 	fmt.Println("Loading state from", dataFilePath)
-	// Change the filename to use the constant path
 	data, err := os.ReadFile(dataFilePath)
-	
-	// If the file doesn't exist (e.g., first ever deploy), create a default state.
+
+	// If the file doesn't exist, create a default state.
 	if os.IsNotExist(err) {
-		fmt.Println("data.json not found, creating default state.")
-		// Create a default state here or have a default .json in your repo to copy from.
-		// For now, we'll just log a fatal error. In a real app, you'd handle this more gracefully.
-		log.Fatalf("data.json not found at %s. Please create an initial file on the persistent disk.", dataFilePath)
-	} else if err != nil {
+		fmt.Println("data.json not found, creating a default initial state.")
+		// Create a default state for the very first run
+		appState = AppState{
+			ClubName:           "My New Club",
+			ClubType:           "Books",
+			Members:            []string{"Admin"},
+			CurrentPickerIndex: 0,
+			CurrentRound: Round{
+				Suggestions:      []map[string]string{},
+				Votes:            make(map[string]map[string]int),
+				IsVotingClosed:   false,
+				WinningItem:      nil,
+				CompletionStatus: map[string]bool{"Admin": false},
+				IsDiscussed:      false,
+			},
+			History: []HistoryEntry{},
+		}
+		// Save this new default state to the persistent disk
+		if err := saveState(); err != nil {
+			log.Fatalf("Could not create initial state file: %v", err)
+		}
+		return // Continue successfully
+	}
+	
+	// If there's another type of error, then we should crash.
+	if err != nil {
 		log.Fatalf("Error reading state file: %v", err)
 	}
 
+	// If the file exists, load it as before.
 	if err := json.Unmarshal(data, &appState); err != nil {
 		log.Fatalf("Error unmarshaling state file: %v", err)
 	}
