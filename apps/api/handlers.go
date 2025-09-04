@@ -187,3 +187,25 @@ func nextRoundHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "New round started. Picker is now %s.", appState.Members[appState.CurrentPickerIndex])
 }
+
+func resetStateHandler(w http.ResponseWriter, r *http.Request) {
+	// 1. Decode the incoming JSON body into a new AppState struct
+	var newState AppState
+	if err := json.NewDecoder(r.Body).Decode(&newState); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// 2. Replace the current in-memory state with the new state
+	appState = newState
+
+	// 3. Save the new state to the file
+	if err := saveState(); err != nil {
+		http.Error(w, "Failed to save state", http.StatusInternalServerError)
+		return
+	}
+
+	// 4. Respond with success
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintln(w, "State has been reset successfully.")
+}

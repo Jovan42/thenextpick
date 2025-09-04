@@ -58,6 +58,7 @@ func main() {
 	r.Post("/api/completion-status", completionStatusHandler)
 	r.Post("/api/round/discussed", discussedHandler)
 	r.Post("/api/round/next", nextRoundHandler)
+	r.Post("/api/reset", resetStateHandler)
 
 	port := ":8080"
 	fmt.Printf("Go API server starting on http://localhost%s\n", port)

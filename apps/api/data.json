@@ -1,65 +1,21 @@
 {
-  "clubName": "The Book Nook",
+  "clubName": "Reset Club",
   "clubType": "Books",
   "members": [
-    "Alice",
-    "Bob",
-    "Charlie",
-    "Diana"
+    "Admin",
+    "User"
   ],
-  "currentPickerIndex": 2,
+  "currentPickerIndex": 0,
   "currentRound": {
     "suggestions": [],
     "votes": {},
     "isVotingClosed": false,
     "winningItem": null,
     "completionStatus": {
-      "Alice": false,
-      "Bob": false,
-      "Charlie": false,
-      "Diana": false
+      "Admin": false,
+      "User": false
     },
     "isDiscussed": false
   },
-  "history": [
-    {
-      "winningItem": null,
-      "picker": "Alice",
-      "dateCompleted": "2025-09-04"
-    },
-    {
-      "winningItem": null,
-      "picker": "Bob",
-      "dateCompleted": "2025-09-04"
-    },
-    {
-      "winningItem": {
-        "author": "Dan Simmons",
-        "title": "Hyperion"
-      },
-      "picker": "Charlie",
-      "dateCompleted": "2025-09-04"
-    },
-    {
-      "winningItem": null,
-      "picker": "Diana",
-      "dateCompleted": "2025-09-04"
-    },
-    {
-      "winningItem": {
-        "author": "K1",
-        "title": "A1"
-      },
-      "picker": "Alice",
-      "dateCompleted": "2025-09-04"
-    },
-    {
-      "winningItem": {
-        "author": "K",
-        "title": "K"
-      },
-      "picker": "Bob",
-      "dateCompleted": "2025-09-04"
-    }
-  ]
+  "history": []
 }
