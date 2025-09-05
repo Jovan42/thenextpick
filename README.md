@@ -1,135 +1,110 @@
-# Turborepo starter
+# TheNextPick
 
-This Turborepo starter is maintained by the Turborepo core team.
+A flexible platform designed for groups to democratically decide on and participate in shared activities. The project begins with a focused MVP and evolves into a versatile, multi-purpose platform.
 
-## Using this example
+## 🎯 Phase 1: MVP (Current Implementation)
 
-Run the following command:
+TheNextPick MVP is a "Book Club" application that validates the core decision-making loop and tracks group activity over time. It operates on an "honor system" without user logins.
 
-```sh
-npx create-turbo@latest
+### ✨ Features
+
+- **Democratic Voting System**: Members suggest 3 items, then vote using a 3-2-1 point system
+- **Round Management**: Complete workflow from suggestions → voting → completion → history
+- **Live Score Tracking**: Real-time vote tallies during voting phase
+- **Completion Tracking**: Members can mark items as completed
+- **History Log**: Permanent record of all past winning items
+- **Responsive UI**: Modern, intuitive interface with clear visual feedback
+
+### 🏗️ Architecture
+
+**Backend**: Go (Golang)
+- REST API using `net/http` and Chi router
+- In-memory state management with JSON persistence
+- CORS enabled for frontend integration
+
+**Frontend**: React with Next.js
+- TypeScript for type safety
+- Component-based architecture
+- Real-time state synchronization
+
+**Data Persistence**: Single `data.json` file
+- Automatic state saving after every change
+- Persistent across server restarts
+
+### 🚀 Quick Start
+
+#### Backend (Go API)
+```bash
+cd apps/api
+go mod tidy
+go run .
+```
+Server runs on `http://localhost:8080`
+
+#### Frontend (React)
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+App runs on `http://localhost:3000`
+
+### 📊 API Endpoints
+
+- `GET /api/state` - Get current application state
+- `POST /api/suggest` - Submit 3 suggestions for voting
+- `POST /api/vote` - Submit member's vote rankings
+- `POST /api/round/close-voting` - Close voting and calculate winner
+- `POST /api/completion-status` - Toggle member's completion status
+- `POST /api/round/discussed` - Mark round as discussed
+- `POST /api/round/next` - Start next round (saves to history)
+
+### 🔄 Workflow
+
+1. **Suggestion Phase**: Current picker suggests 3 items
+2. **Voting Phase**: All members vote using 3-2-1 point system
+3. **Results Phase**: Winner is calculated and displayed
+4. **Completion Phase**: Members mark items as completed
+5. **Discussion Phase**: Round is marked as discussed
+6. **Next Round**: History is saved, picker rotates, new round begins
+
+### 📱 UI Components
+
+- **SuggestionView**: Form for submitting 3 suggestions
+- **VotingView**: Interactive voting interface with live scores
+- **ReadingView**: Winner display with completion tracking
+- **HistoryPanel**: Chronological list of past winners
+
+## 🎯 Future Phases
+
+### Phase 2: Multi-Purpose Platform
+- PostgreSQL database migration
+- User authentication with JWTs
+- Customizable club creation
+- Multi-group support
+
+### Phase 3: Mobile Expansion
+- React Native mobile apps
+- Push notifications
+- Cross-platform synchronization
+
+## 🛠️ Development
+
+### Project Structure
+```
+TheNextPick/
+├── apps/
+│   ├── api/          # Go backend
+│   └── web/          # React frontend
+├── packages/         # Shared packages
+└── README.md
 ```
 
-## What's inside?
+### Technology Stack
+- **Backend**: Go, Chi router, CORS
+- **Frontend**: React, Next.js, TypeScript
+- **Deployment**: Render (API), Vercel (Frontend)
 
-This Turborepo includes the following packages/apps:
+## 📄 License
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
-
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+This project is part of TheNextPick platform development.

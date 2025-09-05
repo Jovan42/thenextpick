@@ -64,31 +64,104 @@ export default function SuggestionView({ appState, onSuggestionsSubmitted }: Sug
 
   return (
     <div>
-      <h2>It's {pickerName}'s turn to suggest items!</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '1rem' }}>
+      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <h2 style={{ margin: '0 0 0.5rem 0', color: '#1a1a1a' }}>
+          🎯 It's {pickerName}'s turn to suggest!
+        </h2>
+        <p style={{ margin: 0, color: '#4a4a4a' }}>
+          Choose 3 {appState.clubType.toLowerCase()} for the group to vote on
+        </p>
+      </div>
+      
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
         {suggestions.map((suggestion, index) => (
-          <div key={index} style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-            <label>Suggestion #{index + 1}</label>
-            <input
-              type="text"
-              value={suggestion.title}
-              onChange={(e) => handleSuggestionChange(index, 'title', e.target.value)}
-              placeholder="Book Title"
-              style={{ padding: '8px' }}
-            />
-            <input
-              type="text"
-              value={suggestion.author}
-              onChange={(e) => handleSuggestionChange(index, 'author', e.target.value)}
-              placeholder="Author"
-              style={{ padding: '8px' }}
-            />
+          <div 
+            key={index} 
+            style={{ 
+              padding: '1.5rem', 
+              border: '2px solid #e0e0e0', 
+              borderRadius: '8px',
+              backgroundColor: '#fafafa'
+            }}
+          >
+            <h4 style={{ margin: '0 0 1rem 0', color: '#2a2a2a' }}>
+              Suggestion #{index + 1}
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: '500', color: '#2a2a2a' }}>
+                  Title
+                </label>
+                <input
+                  type="text"
+                  value={suggestion.title}
+                  onChange={(e) => handleSuggestionChange(index, 'title', e.target.value)}
+                  placeholder="Enter the title..."
+                  style={{ 
+                    width: '100%',
+                    padding: '0.75rem', 
+                    border: '1px solid #ced4da',
+                    borderRadius: '4px',
+                    fontSize: '1rem',
+                    boxSizing: 'border-box'
+                  }}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.25rem', fontWeight: '500', color: '#2a2a2a' }}>
+                  Author
+                </label>
+                <input
+                  type="text"
+                  value={suggestion.author}
+                  onChange={(e) => handleSuggestionChange(index, 'author', e.target.value)}
+                  placeholder="Enter the author..."
+                  style={{ 
+                    width: '100%',
+                    padding: '0.75rem', 
+                    border: '1px solid #ced4da',
+                    borderRadius: '4px',
+                    fontSize: '1rem',
+                    boxSizing: 'border-box'
+                  }}
+                />
+              </div>
+            </div>
           </div>
         ))}
-        <button type="submit" style={{ padding: '10px', cursor: 'pointer', marginTop: '10px' }}>
+        
+        <button 
+          type="submit" 
+          style={{ 
+            padding: '1rem 2rem', 
+            backgroundColor: '#007bff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            fontSize: '1.1rem',
+            fontWeight: '500',
+            cursor: 'pointer',
+            marginTop: '1rem',
+            transition: 'background-color 0.2s'
+          }}
+          onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0056b3'}
+          onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#007bff'}
+        >
           Submit Suggestions
         </button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        
+        {error && (
+          <div style={{ 
+            padding: '1rem', 
+            backgroundColor: '#f8d7da', 
+            color: '#721c24', 
+            border: '1px solid #f5c6cb',
+            borderRadius: '4px',
+            marginTop: '1rem'
+          }}>
+            {error}
+          </div>
+        )}
       </form>
     </div>
   );

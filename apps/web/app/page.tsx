@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { AppState } from '../types/state'; // We'll create this new file for types
+import { AppState } from '../types/state';
 import SuggestionView from '../components/SuggestionView';
 import VotingView from '../components/VotingView';
 import ReadingView from '../components/ReadingView';
+import HistoryPanel from '../components/HistoryPanel';
 
 export default function Page() {
   const [state, setState] = useState<AppState | null>(null);
@@ -48,12 +49,50 @@ export default function Page() {
   };
 
   return (
-    <main style={{ fontFamily: 'sans-serif', padding: '2rem' }}>
-      <h1>{state ? state.clubName : 'TheNextPick'}</h1>
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-      <div style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #ccc' }}>
+    <main style={{ 
+      fontFamily: 'sans-serif', 
+      padding: '2rem', 
+      maxWidth: '800px', 
+      margin: '0 auto',
+      backgroundColor: '#ffffff',
+      minHeight: '100vh'
+    }}>
+      <header style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <h1 style={{ margin: '0 0 0.5rem 0', color: '#1a1a1a' }}>
+          {state ? state.clubName : 'TheNextPick'}
+        </h1>
+        {state && (
+          <p style={{ margin: 0, color: '#4a4a4a', fontSize: '1.1rem' }}>
+            {state.clubType} Club
+          </p>
+        )}
+      </header>
+      
+      {error && (
+        <div style={{ 
+          padding: '1rem', 
+          backgroundColor: '#f8d7da', 
+          color: '#721c24', 
+          border: '1px solid #f5c6cb',
+          borderRadius: '4px',
+          marginBottom: '1rem'
+        }}>
+          Error: {error}
+        </div>
+      )}
+      
+      <div style={{ 
+        marginBottom: '2rem', 
+        padding: '1.5rem', 
+        border: '1px solid #e0e0e0', 
+        borderRadius: '8px',
+        backgroundColor: '#ffffff',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+      }}>
         {renderCurrentView()}
       </div>
+      
+      {state && <HistoryPanel appState={state} />}
     </main>
   );
 }

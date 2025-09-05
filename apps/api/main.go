@@ -7,15 +7,15 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/rs/cors" 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/rs/cors"
 )
 
 // appState will hold our application's state in memory.
 var appState AppState
 
-const dataFilePath = "/data/data.json"
+const dataFilePath = "data.json"
 
 func loadState() {
 	fmt.Println("Loading state from", dataFilePath)
@@ -46,7 +46,7 @@ func loadState() {
 		}
 		return // Continue successfully
 	}
-	
+
 	// If there's another type of error, then we should crash.
 	if err != nil {
 		log.Fatalf("Error reading state file: %v", err)
@@ -69,7 +69,7 @@ func saveState() error {
 	if err = os.WriteFile(dataFilePath, data, 0644); err != nil {
 		return fmt.Errorf("error writing to state file: %v", err)
 	}
-	
+
 	fmt.Println("State saved successfully to persistent disk.")
 	return nil
 }
@@ -77,11 +77,11 @@ func saveState() error {
 func main() {
 	loadState()
 	r := chi.NewRouter()
-		r.Use(cors.New(cors.Options{
-        AllowedOrigins:   []string{"http://localhost:3000", "https://thenextpick-lzrlaiybi-jovan0042-5768s-projects.vercel.app", "https://thenextpick-web.vercel.app"},
-        AllowCredentials: true,
-        Debug:            true,
-    }).Handler)
+	r.Use(cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000", "https://thenextpick-lzrlaiybi-jovan0042-5768s-projects.vercel.app", "https://thenextpick-web.vercel.app"},
+		AllowCredentials: true,
+		Debug:            true,
+	}).Handler)
 
 	r.Use(middleware.Logger)
 

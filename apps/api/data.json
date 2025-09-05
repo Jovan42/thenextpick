@@ -5,7 +5,7 @@
     "Admin",
     "User"
   ],
-  "currentPickerIndex": 0,
+  "currentPickerIndex": 1,
   "currentRound": {
     "suggestions": [],
     "votes": {},
@@ -17,5 +17,14 @@
     },
     "isDiscussed": false
   },
-  "history": []
+  "history": [
+    {
+      "winningItem": {
+        "author": "F. Scott Fitzgerald",
+        "title": "The Great Gatsby"
+      },
+      "picker": "Admin",
+      "dateCompleted": "2025-09-05"
+    }
+  ]
 }
