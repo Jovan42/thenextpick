@@ -1,4 +1,5 @@
 import { AppState } from '../types/state';
+import { getApiBaseUrl } from '../utils/config';
 
 interface ReadingViewProps {
   appState: AppState;
@@ -15,7 +16,7 @@ export default function ReadingView({ appState, onUpdateState }: ReadingViewProp
 
   const handleToggleCompletion = async (memberName: string) => {
     try {
-      const response = await fetch('https://thenextpick-api.onrender.com/api/completion-status', {
+      const response = await fetch(`${getApiBaseUrl()}/api/completion-status`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ member: memberName }),
@@ -29,7 +30,7 @@ export default function ReadingView({ appState, onUpdateState }: ReadingViewProp
 
   const handleMarkAsDiscussed = async () => {
     try {
-      const response = await fetch('https://thenextpick-api.onrender.com/api/round/discussed', { method: 'POST' });
+      const response = await fetch(`${getApiBaseUrl()}/api/round/discussed`, { method: 'POST' });
       if (!response.ok) throw new Error(await response.text());
       onUpdateState();
     } catch (err) {
@@ -39,7 +40,7 @@ export default function ReadingView({ appState, onUpdateState }: ReadingViewProp
 
   const handleNextRound = async () => {
     try {
-      const response = await fetch('https://thenextpick-api.onrender.com/api/round/next', { method: 'POST' });
+      const response = await fetch(`${getApiBaseUrl()}/api/round/next`, { method: 'POST' });
       if (!response.ok) throw new Error(await response.text());
       onUpdateState();
     } catch (err) {

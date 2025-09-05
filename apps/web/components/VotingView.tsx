@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { AppState } from '../types/state';
+import { loadConfig, getVotingPoints, getVotingPointCount, getApiBaseUrl } from '../utils/config';
 
 interface VotingViewProps {
   appState: AppState;
@@ -20,6 +21,17 @@ type MemberVotes = {
     const [unvotedMembers, setUnvotedMembers] = useState<string[]>([]);
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [votingPoints, setVotingPoints] = useState<number[]>([3, 2, 1]);
+    const [pointCount, setPointCount] = useState(3);
+
+    useEffect(() => {
+      const initializeConfig = async () => {
+        await loadConfig();
+        setVotingPoints(getVotingPoints());
+        setPointCount(getVotingPointCount());
+      };
+      initializeConfig();
+    }, []);
   
     const liveScores = useMemo(() => {
       const scores: { [title: string]: number } = {};
@@ -28,16 +40,15 @@ type MemberVotes = {
       const backendVotes = appState.currentRound.votes || {};
       for (const member in backendVotes) {
         for (const title in backendVotes[member]) {
-          const rank = backendVotes[member][title];
-          let points = 0;
-          if (rank === 1) points = 3;
-          else if (rank === 2) points = 2;
-          else if (rank === 3) points = 1;
-          scores[title] += points;
+          const rank = backendVotes[member]?.[title];
+          if (rank && rank > 0) {
+            const points = votingPoints[rank - 1] || 0;
+            scores[title] = (scores[title] || 0) + points;
+          }
         }
       }
       return Object.entries(scores).sort((a, b) => b[1] - a[1]);
-    }, [appState.currentRound.votes, appState.currentRound.suggestions]);
+    }, [appState.currentRound.votes, appState.currentRound.suggestions, votingPoints]);
   
     useEffect(() => {
       const initialVotes: MemberVotes = {};
@@ -60,18 +71,19 @@ type MemberVotes = {
   
     const handleSubmitVote = async (memberName: string) => {
       setError('');
-      const memberRankings = votes[memberName];
+      const memberRankings = votes[memberName] || {};
       const assignedRanks = Object.values(memberRankings).filter(r => r > 0);
   
-      if (new Set(assignedRanks).size !== 3 || assignedRanks.length !== 3) {
-        setErrorMessage(`You must assign points to all ${appState.clubType.toLowerCase()}. Each point value (3, 2, and 1) must be used exactly once.`);
+      if (new Set(assignedRanks).size !== pointCount || assignedRanks.length !== pointCount) {
+        const pointsText = votingPoints.join(', ');
+        setErrorMessage(`You must assign points to all ${appState.clubType.toLowerCase()}. Each point value (${pointsText}) must be used exactly once.`);
         setShowErrorModal(true);
         return;
       }
   
       try {
         const payload = { member: memberName, rankings: memberRankings };
-        const response = await fetch('https://thenextpick-api.onrender.com/api/vote', {
+        const response = await fetch(`${getApiBaseUrl()}/api/vote`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -99,7 +111,7 @@ type MemberVotes = {
 
     const closeVoting = async () => {
       try {
-        const response = await fetch('https://thenextpick-api.onrender.com/api/round/close-voting', { method: 'POST' });
+        const response = await fetch(`${getApiBaseUrl()}/api/round/close-voting`, { method: 'POST' });
         if (!response.ok) throw new Error(await response.text());
         onUpdateState();
         setShowConfirmModal(false);
@@ -129,7 +141,7 @@ type MemberVotes = {
           🗳️ Voting is Active!
         </h2>
         <p style={{ margin: 0, color: '#4a4a4a' }}>
-          Assign points to each {appState.clubType.toLowerCase()}. You must use each point value (3, 2, and 1) exactly once.
+          Assign points to each {appState.clubType.toLowerCase()}. You must use each point value ({votingPoints.join(', ')}) exactly once.
         </p>
       </div>
       
@@ -224,9 +236,11 @@ type MemberVotes = {
                       }}
                     >
                       <option value={0} style={{ color: '#2a2a2a' }}>- Points -</option>
-                      <option value={1} style={{ color: '#2a2a2a' }}>3 Points (Best)</option>
-                      <option value={2} style={{ color: '#2a2a2a' }}>2 Points</option>
-                      <option value={3} style={{ color: '#2a2a2a' }}>1 Point</option>
+                      {votingPoints.map((points, index) => (
+                        <option key={index} value={index + 1} style={{ color: '#2a2a2a' }}>
+                          {points} Point{points !== 1 ? 's' : ''} {index === 0 ? '(Best)' : ''}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 ))}
@@ -533,10 +547,12 @@ type MemberVotes = {
                 lineHeight: '1.6'
               }}>
                 <li>You must assign points to all {appState.clubType.toLowerCase()}</li>
-                <li>Use each point value (3, 2, 1) exactly once</li>
-                <li>3 points = your top choice</li>
-                <li>2 points = your second choice</li>
-                <li>1 point = your third choice</li>
+                <li>Use each point value ({votingPoints.join(', ')}) exactly once</li>
+                {votingPoints.map((points, index) => (
+                  <li key={index}>
+                    {points} point{points !== 1 ? 's' : ''} = your {index === 0 ? 'top' : index === 1 ? 'second' : index === 2 ? 'third' : `${index + 1}th`} choice
+                  </li>
+                ))}
               </ul>
             </div>
 

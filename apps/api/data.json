@@ -5,7 +5,7 @@
     "Admin",
     "User"
   ],
-  "currentPickerIndex": 1,
+  "currentPickerIndex": 0,
   "currentRound": {
     "suggestions": [],
     "votes": {},
@@ -24,6 +24,14 @@
         "title": "The Great Gatsby"
       },
       "picker": "Admin",
+      "dateCompleted": "2025-09-05"
+    },
+    {
+      "winningItem": {
+        "author": "a",
+        "title": "a"
+      },
+      "picker": "User",
       "dateCompleted": "2025-09-05"
     }
   ]

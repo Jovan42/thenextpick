@@ -12,6 +12,59 @@ import (
 	"github.com/rs/cors"
 )
 
+// Config represents the application configuration
+type Config struct {
+	Suggestions struct {
+		MinCount     int `json:"minCount"`
+		MaxCount     int `json:"maxCount"`
+		DefaultCount int `json:"defaultCount"`
+	} `json:"suggestions"`
+	Voting struct {
+		PointSystem struct {
+			Enabled bool  `json:"enabled"`
+			Points  []int `json:"points"`
+		} `json:"pointSystem"`
+	} `json:"voting"`
+}
+
+var appConfig Config
+
+// loadConfig loads the configuration from config.json
+func loadConfig() error {
+	data, err := os.ReadFile("config.json")
+	if err != nil {
+		// If config file doesn't exist, use defaults
+		appConfig = Config{
+			Suggestions: struct {
+				MinCount     int `json:"minCount"`
+				MaxCount     int `json:"maxCount"`
+				DefaultCount int `json:"defaultCount"`
+			}{
+				MinCount:     3,
+				MaxCount:     5,
+				DefaultCount: 3,
+			},
+			Voting: struct {
+				PointSystem struct {
+					Enabled bool  `json:"enabled"`
+					Points  []int `json:"points"`
+				} `json:"pointSystem"`
+			}{
+				PointSystem: struct {
+					Enabled bool  `json:"enabled"`
+					Points  []int `json:"points"`
+				}{
+					Enabled: true,
+					Points:  []int{3, 2, 1},
+				},
+			},
+		}
+		return nil
+	}
+
+	return json.Unmarshal(data, &appConfig)
+}
+
 // appState will hold our application's state in memory.
 var appState AppState
 
@@ -75,6 +128,11 @@ func saveState() error {
 }
 
 func main() {
+	// Load configuration first
+	if err := loadConfig(); err != nil {
+		log.Fatalf("Error loading config: %v", err)
+	}
+
 	loadState()
 	r := chi.NewRouter()
 	r.Use(cors.New(cors.Options{
@@ -87,6 +145,7 @@ func main() {
 
 	// Define our API routes
 	r.Get("/api/state", getStateHandler)
+	r.Get("/api/config", getConfigHandler)
 	r.Post("/api/suggest", suggestHandler)
 	r.Post("/api/vote", voteHandler)
 	r.Post("/api/round/close-voting", closeVotingHandler)

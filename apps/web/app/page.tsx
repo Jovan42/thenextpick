@@ -6,13 +6,14 @@ import SuggestionView from '../components/SuggestionView';
 import VotingView from '../components/VotingView';
 import ReadingView from '../components/ReadingView';
 import HistoryPanel from '../components/HistoryPanel';
+import { getApiBaseUrl } from '../utils/config';
 
 export default function Page() {
   const [state, setState] = useState<AppState | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const fetchState = () => {
-    fetch('https://thenextpick-api.onrender.com/api/state')
+    fetch(`${getApiBaseUrl()}/api/state`)
       .then(response => {
         if (!response.ok) throw new Error('Network response was not ok');
         return response.json();

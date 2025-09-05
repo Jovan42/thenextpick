@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AppState } from '../types/state';
+import { loadConfig, getSuggestionCount, getApiBaseUrl } from '../utils/config';
 
 // Define the component's props
 interface SuggestionViewProps {
@@ -14,13 +15,20 @@ interface Suggestion {
 }
 
 export default function SuggestionView({ appState, onSuggestionsSubmitted }: SuggestionViewProps) {
-  // Use a single state variable to hold all three suggestions
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([
-    { title: '', author: '' },
-    { title: '', author: '' },
-    { title: '', author: '' },
-  ]);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [error, setError] = useState('');
+  const [suggestionCount, setSuggestionCount] = useState(3);
+
+  useEffect(() => {
+    const initializeConfig = async () => {
+      await loadConfig();
+      const count = getSuggestionCount();
+      setSuggestionCount(count);
+      // Initialize suggestions array with the configured count
+      setSuggestions(Array(count).fill(null).map(() => ({ title: '', author: '' })));
+    };
+    initializeConfig();
+  }, []);
 
   const pickerName = appState.members[appState.currentPickerIndex];
 
@@ -37,14 +45,14 @@ export default function SuggestionView({ appState, onSuggestionsSubmitted }: Sug
 
     // Validate that all fields are filled
     if (suggestions.some(s => !s.title || !s.author)) {
-      setError('Please fill out both title and author for all three suggestions.');
+      setError(`Please fill out both title and author for all ${suggestionCount} suggestions.`);
       return;
     }
 
     const payload = { suggestions }; // The state is already in the correct format
 
     try {
-      const response = await fetch('https://thenextpick-api.onrender.com/api/suggest', {
+      const response = await fetch(`${getApiBaseUrl()}/api/suggest`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -69,7 +77,7 @@ export default function SuggestionView({ appState, onSuggestionsSubmitted }: Sug
           🎯 It's {pickerName}'s turn to suggest!
         </h2>
         <p style={{ margin: 0, color: '#4a4a4a' }}>
-          Choose 3 {appState.clubType.toLowerCase()} for the group to vote on
+          Choose {suggestionCount} {appState.clubType.toLowerCase()} for the group to vote on
         </p>
       </div>
       

@@ -49,6 +49,39 @@ npm run dev
 ```
 App runs on `http://localhost:3000`
 
+### ⚙️ Configuration
+
+The application uses a flexible configuration system that allows easy switching between local development and production environments.
+
+#### Configuration Files
+- **`apps/web/public/config.json`** - Local development configuration
+- **`apps/web/public/config.production.json`** - Production configuration template
+
+#### Key Configuration Options
+```json
+{
+  "api": {
+    "baseUrl": "http://localhost:8080"  // or "https://thenextpick-api.onrender.com"
+  },
+  "suggestions": {
+    "minCount": 3,
+    "maxCount": 5,
+    "defaultCount": 4
+  },
+  "voting": {
+    "pointSystem": {
+      "enabled": true,
+      "points": [3, 2, 1]
+    }
+  }
+}
+```
+
+#### Switching Environments
+- **Local Development**: Use `config.json` with `localhost:8080`
+- **Production**: Copy `config.production.json` to `config.json` before deployment
+- **Custom**: Modify the `baseUrl` in `config.json` to point to your API server
+
 ### 📊 API Endpoints
 
 - `GET /api/state` - Get current application state

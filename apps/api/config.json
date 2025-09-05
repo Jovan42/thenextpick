@@ -1,0 +1,13 @@
+{
+  "suggestions": {
+    "minCount": 3,
+    "maxCount": 5,
+    "defaultCount": 4
+  },
+  "voting": {
+    "pointSystem": {
+      "enabled": true,
+      "points": [3, 2, 1]
+    }
+  }
+}

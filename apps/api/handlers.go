@@ -13,6 +13,12 @@ func getStateHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(appState)
 }
 
+// getConfigHandler returns the current application configuration.
+func getConfigHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(appConfig)
+}
+
 // suggestHandler handles the logic for adding new suggestions for a round.
 func suggestHandler(w http.ResponseWriter, r *http.Request) {
 	var req SuggestRequest
@@ -25,8 +31,9 @@ func suggestHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Suggestions have already been made for this round.", http.StatusConflict)
 		return
 	}
-	if len(req.Suggestions) != 3 {
-		http.Error(w, "Exactly 3 suggestions are required.", http.StatusBadRequest)
+	expectedCount := appConfig.Suggestions.DefaultCount
+	if len(req.Suggestions) != expectedCount {
+		http.Error(w, fmt.Sprintf("Exactly %d suggestions are required.", expectedCount), http.StatusBadRequest)
 		return
 	}
 
@@ -125,7 +132,7 @@ func completionStatusHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
-	
+
 	// CHANGE IS HERE: Always set to true, never toggle back to false.
 	appState.CurrentRound.CompletionStatus[req.Member] = true
 

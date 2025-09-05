@@ -1,0 +1,24 @@
+{
+  "api": {
+    "baseUrl": "https://thenextpick-api.onrender.com"
+  },
+  "suggestions": {
+    "minCount": 3,
+    "maxCount": 5,
+    "defaultCount": 4
+  },
+  "voting": {
+    "pointSystem": {
+      "enabled": true,
+      "points": [3, 2, 1]
+    }
+  },
+  "ui": {
+    "theme": {
+      "primaryColor": "#007bff",
+      "successColor": "#28a745",
+      "warningColor": "#ffc107",
+      "dangerColor": "#dc3545"
+    }
+  }
+}
